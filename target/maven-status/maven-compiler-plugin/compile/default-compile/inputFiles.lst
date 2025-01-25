@@ -1,0 +1,9 @@
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/controllers/ProductoPrecioController.java
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/controllers/ProductoController.java
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/models/DBConnection.java
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/models/Producto.java
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/repositories/PrecioFechaRepository.java
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/main/AgendaPreciosApplication.java
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/models/PrecioFecha.java
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/repositories/ProductoRepository.java
+/home/danilo/AgendaRegistroComidaAnimales/src/main/java/com/agendaprecios/main/AgendaController.java
