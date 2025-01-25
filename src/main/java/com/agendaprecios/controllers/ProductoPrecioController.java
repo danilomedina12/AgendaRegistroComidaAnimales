@@ -40,7 +40,7 @@ public class ProductoPrecioController {
                                           @RequestParam double precio,
                                           @RequestParam String fecha) {
 
-        Producto producto;
+        Producto producto = null;
 
         // Verificar si se seleccionó un producto existente
         if (productoId != null && productoId > 0) {
@@ -59,7 +59,7 @@ public class ProductoPrecioController {
 
         // Crear el registro de precio con la fecha
         PrecioFecha precioFecha = new PrecioFecha();
-        precioFecha.setIdProducto(producto.getId());
+        precioFecha.setIdProducto(producto);
         precioFecha.setPrecio(precio);
         precioFecha.setFecha(LocalDate.parse(fecha));
 
@@ -67,6 +67,12 @@ public class ProductoPrecioController {
         precioFechaRepository.save(precioFecha);
 
         // Redirigir a la página de formulario o de éxito
-        return "redirect:/formulario";  // Redirigir al formulario de nuevo para registrar otro precio
+        return "redirect:/exito";  // Redirigir al formulario de nuevo para registrar otro precio
     }
+
+    // Agregar un mapeo para /exito
+    @GetMapping("/exito")
+    public String exito() {
+        return "exito";  // Nombre de la vista exito.html
+    }   
 }

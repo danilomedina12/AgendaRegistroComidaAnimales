@@ -28,8 +28,8 @@ public class PrecioFecha {
         this.fecha = fecha;
     }
 
-    public void setIdProducto(int id2) {
-        this.id = id2;
+    public void setIdProducto(Producto producto) {
+        this.producto = producto;
     }
 
 
