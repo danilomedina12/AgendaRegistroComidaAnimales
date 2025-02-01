@@ -4,45 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda de Precios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Estilo para la imagen de fondo */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-image: url('/image.jpg'); /* Ruta de la imagen */
+            background-size: cover; /* Ajusta la imagen al tamaño de la ventana */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            margin: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
-        .container {
-            background-color: #fff;
+
+        /* Estilo para el cuadro con fondo transparente y desenfoque */
+        .card {
+            background-color: rgba(255, 255, 255, 0.5); /* Fondo semitransparente */
+            backdrop-filter: blur(10px); /* Efecto de desenfoque */
+            border: none; /* Sin borde */
+            border-radius: 15px; /* Bordes redondeados */
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
             text-align: center;
         }
+
+        /* Estilo para el texto */
         h1 {
-            color: #333;
+            color: #333; /* Color oscuro para el texto */
             font-size: 2rem;
+            margin-bottom: 20px;
         }
+
         p {
-            color: #666;
+            color: #666; /* Color gris para el texto */
             font-size: 1.2rem;
+            margin-bottom: 30px;
         }
-        a {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
+
+        /* Estilo para los botones */
+        .btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 1rem;
             border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50; /* Color verde */
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d; /* Color gris */
+            border: none;
+        }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9; /* Efecto de hover */
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="card">
         <h1>Bienvenido a la Agenda de Precios</h1>
         <p>Bienvenido a la aplicación donde podés registrar precios de productos.</p>
-        <a href="http://localhost:8080/formulario">Ingresá al formulario</a>
+        <a href="/formulario" class="btn btn-primary">Ingresá al formulario</a>
+        <a href="/consultar-precios" class="btn btn-secondary">Consultar precios por marca</a>
     </div>
 </body>
 </html>

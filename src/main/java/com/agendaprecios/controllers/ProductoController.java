@@ -22,4 +22,5 @@ public class ProductoController {
     public Producto createProducto(@RequestBody Producto producto) {
         return productoRepository.save(producto);
     }
+
 }

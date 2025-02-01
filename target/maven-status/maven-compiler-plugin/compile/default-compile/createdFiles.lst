@@ -1,9 +1,9 @@
-com/agendaprecios/repositories/ProductoRepository.class
 com/agendaprecios/main/AgendaPreciosApplication.class
-com/agendaprecios/controllers/ProductoPrecioController.class
 com/agendaprecios/controllers/ProductoController.class
+com/agendaprecios/repositories/PrecioFechaRepository.class
+com/agendaprecios/repositories/ProductoRepository.class
+com/agendaprecios/controllers/ProductoPrecioController.class
 com/agendaprecios/models/PrecioFecha.class
 com/agendaprecios/main/AgendaController.class
-com/agendaprecios/repositories/PrecioFechaRepository.class
 com/agendaprecios/models/Producto.class
 com/agendaprecios/models/DBConnection.class

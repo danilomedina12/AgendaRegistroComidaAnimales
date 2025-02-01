@@ -42,6 +42,15 @@ public class PrecioFecha {
         this.fecha = localDate;
     }
 
+    // getters
+
+    public double getPrecio(){
+        return this.precio;
+    }
+
+    public LocalDate getFecha(){
+        return this.fecha;
+    }
 }
 
 
