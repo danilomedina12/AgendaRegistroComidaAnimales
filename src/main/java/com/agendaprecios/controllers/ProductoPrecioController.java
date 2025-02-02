@@ -5,6 +5,7 @@ import com.agendaprecios.models.PrecioFecha;
 import com.agendaprecios.repositories.ProductoRepository;
 import com.agendaprecios.repositories.PrecioFechaRepository;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class ProductoPrecioController {
@@ -78,42 +81,54 @@ public class ProductoPrecioController {
     }
 
     @GetMapping("/consultar-precios")
-    public String consultarPrecios(@RequestParam(name = "marca", required = false) String marca, Model model) {
+    public String consultarPrecios(
+        @RequestParam(name = "marca", required = false) String marca,
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        Model model) {
+    
         // Obtener todos los productos para la lista desplegable
         List<Producto> productos = productoRepository.findAll();
         model.addAttribute("productos", productos);
     
         if (marca != null && !marca.trim().isEmpty()) {
-            // Limpiar el valor de la marca (eliminar coma al principio y al final)
+            // Limpiar el valor de la marca (eliminar coma al principio)
             marca = marca.replaceAll("^,", "").replaceAll(",$", "").trim();  // Eliminar coma al principio y al final
-
     
             try {
                 // Buscar el producto por nombre (marca)
                 Producto producto = productoRepository.findByNombre(marca)
                     .orElseThrow(() -> new IllegalArgumentException("Marca no encontrada"));
     
-                // Obtener todos los precios del producto, ordenados por fecha ascendente
-                List<PrecioFecha> precios = precioFechaRepository.findByProductoOrderByFechaAsc(producto);
+                // Obtener todos los precios del producto, ordenados por fecha descendente (más reciente primero)
+                List<PrecioFecha> precios = precioFechaRepository.findByProductoOrderByFechaDesc(producto);
     
-                if (precios.isEmpty()) {
-                    model.addAttribute("mensaje", "No hay precios registrados para esta marca.");
-                } else {
-                    // Calcular variaciones
-                    PrecioFecha ultimoPrecio = precios.get(precios.size() - 1);
-                    PrecioFecha anteultimoPrecio = precios.size() > 1 ? precios.get(precios.size() - 2) : null;
+                // Paginar los precios (5 por página)
+                int pageSize = 5; // Número de precios por página
+                int totalPrecios = precios.size();
+                int totalPages = (int) Math.ceil((double) totalPrecios / pageSize);
     
-                    double variacionHistorica = calcularVariacion(precios.get(0).getPrecio(), ultimoPrecio.getPrecio());
-                    double variacionUltimoAnteultimo = anteultimoPrecio != null ?
-                        calcularVariacion(anteultimoPrecio.getPrecio(), ultimoPrecio.getPrecio()) : 0;
+                // Obtener los precios para la página actual
+                int start = page * pageSize;
+                int end = Math.min(start + pageSize, totalPrecios);
+                List<PrecioFecha> preciosPaginados = precios.subList(start, end);
     
-                    // Agregar datos al modelo
-                    model.addAttribute("producto", producto);
-                    model.addAttribute("precios", precios);
-                    model.addAttribute("ultimoPrecio", ultimoPrecio.getPrecio());
-                    model.addAttribute("variacionHistorica", variacionHistorica);
-                    model.addAttribute("variacionUltimoAnteultimo", variacionUltimoAnteultimo);
-                }
+                // Calcular variaciones (usando todos los precios, no solo los paginados)
+                PrecioFecha ultimoPrecio = precios.get(0); // El más reciente
+                PrecioFecha anteultimoPrecio = precios.size() > 1 ? precios.get(1) : null;
+    
+                double variacionHistorica = calcularVariacion(precios.get(precios.size() - 1).getPrecio(), ultimoPrecio.getPrecio());
+                double variacionUltimoAnteultimo = anteultimoPrecio != null ?
+                    calcularVariacion(anteultimoPrecio.getPrecio(), ultimoPrecio.getPrecio()) : 0;
+    
+                // Agregar datos al modelo
+                model.addAttribute("producto", producto);
+                model.addAttribute("precios", preciosPaginados);
+                model.addAttribute("ultimoPrecio", ultimoPrecio.getPrecio());
+                model.addAttribute("fechaUltimoPrecio", ultimoPrecio.getFecha());
+                model.addAttribute("variacionHistorica", variacionHistorica);
+                model.addAttribute("variacionUltimoAnteultimo", variacionUltimoAnteultimo);
+                model.addAttribute("currentPage", page);
+                model.addAttribute("totalPages", totalPages);
             } catch (IllegalArgumentException e) {
                 // Si no se encuentra la marca, mostrar un mensaje de error
                 model.addAttribute("mensaje", "La marca '" + marca + "' no está registrada.");
@@ -121,7 +136,6 @@ public class ProductoPrecioController {
         }
         return "consultar-precios";  // Vista para consultar precios
     }
-
     // Método para calcular la variación de precios
     private double calcularVariacion(double precioAnterior, double precioActual) {
         if (precioAnterior == 0) {

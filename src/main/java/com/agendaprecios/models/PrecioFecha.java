@@ -20,6 +20,7 @@ public class PrecioFecha {
     @Column(nullable = false)
     private LocalDate fecha;
 
+
     public PrecioFecha(){}
 
     public PrecioFecha(Producto producto, double precio, LocalDate fecha){

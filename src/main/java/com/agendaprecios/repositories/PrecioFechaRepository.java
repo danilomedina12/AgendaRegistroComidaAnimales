@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface PrecioFechaRepository extends JpaRepository<PrecioFecha, Integer>{
  
     List<PrecioFecha> findByProductoOrderByFechaAsc(Producto producto);
-
+    List<PrecioFecha> findByProductoOrderByFechaDesc(Producto producto);
 }

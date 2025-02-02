@@ -13,10 +13,11 @@
             background-position: center; /* Centra la imagen */
             background-repeat: no-repeat; /* Evita que la imagen se repita */
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px; /* Espaciado para evitar que el contenido toque los bordes */
         }
 
         /* Estilo para el cuadro con fondo transparente y desenfoque */
@@ -26,8 +27,16 @@
             border: none; /* Sin borde */
             border-radius: 15px; /* Bordes redondeados */
             padding: 20px;
-            max-width: 600px;
+            max-width: 800px; /* Ancho máximo del contenido */
             width: 100%;
+            overflow: hidden; /* Evitar que el contenido se desborde */
+        }
+
+        /* Estilo para la tabla */
+        .table-container {
+            max-height: 300px; /* Altura máxima de la tabla */
+            overflow-y: auto; /* Desplazamiento vertical si es necesario */
+            margin-bottom: 20px; /* Espaciado inferior */
         }
 
         /* Estilo para los botones */
@@ -53,11 +62,27 @@
         .btn-primary:hover, .btn-secondary:hover {
             opacity: 0.9; /* Efecto de hover */
         }
+
+        /* Ajustes para pantallas pequeñas */
+        @media (max-width: 576px) {
+            .card {
+                padding: 15px; /* Reducir el espaciado en pantallas pequeñas */
+            }
+            h1 {
+                font-size: 1.5rem; /* Reducir el tamaño del título */
+            }
+            h2 {
+                font-size: 1.25rem; /* Reducir el tamaño del subtítulo */
+            }
+            .table-container {
+                max-height: 200px; /* Reducir la altura máxima de la tabla */
+            }
+        }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>Consultar Precios por Marca</h1>
+        <h1 class="text-center mb-4">Consultar Precios por Marca</h1>
         <form action="/consultar-precios" method="GET" class="mb-4">
             <!-- Lista desplegable de productos -->
             <div class="mb-3">
@@ -65,7 +90,7 @@
                 <select class="form-select" id="productoSelect" name="marca">
                     <option value="">Seleccione un producto</option>
                     <option th:each="producto : ${productos}" 
-                            th:value="${#strings.trim(producto.nombre).replace(',', '')}" 
+                            th:value="${producto.nombre}" 
                             th:text="${producto.nombre}">
                     </option>
                 </select>
@@ -85,24 +110,42 @@
 
         <!-- Mostrar precios si la marca está registrada -->
         <div th:if="${precios}">
-            <h2 th:text="${'Precios de ' + producto.nombre}"></h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Precio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="precio : ${precios}">
-                        <td th:text="${precio.fecha}"></td>
-                        <td th:text="${'$' + precio.precio}"></td>
-                    </tr>
-                </tbody>
-            </table>
+            <h2 class="text-center mb-3" th:text="${'Precios de ' + producto.nombre}"></h2>
+            <div class="table-container">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="precio : ${precios}">
+                            <td th:text="${precio.fecha}"></td>
+                            <td th:text="${'$' + precio.precio}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <h3>Variaciones</h3>
-            <p><strong>Último precio:</strong> $<span th:text="${ultimoPrecio}"></span></p>
+            <!-- Controles de paginación -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a th:if="${currentPage > 0}" 
+                   th:href="@{/consultar-precios(marca=${producto.nombre}, page=${currentPage - 1})}" 
+                   class="btn btn-secondary">
+                    Anterior
+                </a>
+                <span class="text-muted" th:text="'Página ' + (${currentPage + 1}) + ' de ' + ${totalPages}"></span>
+                <a th:if="${currentPage < totalPages - 1}" 
+                   th:href="@{/consultar-precios(marca=${producto.nombre}, page=${currentPage + 1})}" 
+                   class="btn btn-secondary">
+                    Siguiente
+                </a>
+            </div>
+
+            <h3 class="text-center mb-3">Variaciones</h3>
+            <p><strong>Último precio:</strong> $<span th:text="${ultimoPrecio}"></span> 
+                (<span th:text="${fechaUltimoPrecio}"></span>)</p>             
             <p><strong>Variación histórica:</strong> <span th:text="${variacionHistorica}"></span>%</p>
             <p><strong>Variación último vs anteúltimo:</strong> <span th:text="${variacionUltimoAnteultimo}"></span>%</p>
         </div>
